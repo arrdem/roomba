@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "roomba"
+version = "0.1.0"
+description = "Sweeps up orphaned Bazel output bases and stale repository-cache entries"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+roomba = "roomba.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/roomba"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 10
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-timeout>=2.4.0",
+]
