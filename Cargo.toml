@@ -1,0 +1,19 @@
+[package]
+license = "MIT"
+name = "roomba"
+version = "0.1.0"
+edition = "2021"
+description = "Sweeps up orphaned Bazel output bases and stale repository-cache entries"
+
+[[bin]]
+name = "roomba"
+path = "src/main.rs"
+
+[dependencies]
+# clap for the CLI, mirroring the argparse subcommand layout of the Python port.
+clap = { version = "4", features = ["derive"] }
+# libc for the handful of syscalls std does not expose: flock (liveness), kill(pid, 0)
+# (liveness), and the st_blocks/st_nlink/atime accounting the reaper leans on. No C is
+# built -- these are plain FFI declarations -- so the release binary stays small and
+# the closure clean for prebuilds.
+libc = "0.2"

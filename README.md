@@ -8,15 +8,37 @@ collects it. On this workstation that reached 525 output bases against 298 live
 worktrees and a disk at 100%. roomba finds the ones nobody can possibly want and
 removes them.
 
+A single self-contained binary — two crates (`clap`, `libc`), no runtime dependencies
+beyond a Linux filesystem. Linux-only by design: it leans on `flock`, `st_blocks`, and
+atime semantics that have no faithful cross-platform equivalent.
+
 ## Usage
 
 ```sh
-bazel run //projects/roomba -- scan            # census; deletes nothing
-bazel run //projects/roomba -- sweep           # dry run: what would go, and how much
-bazel run //projects/roomba -- sweep --apply   # actually do it
+roomba scan            # census; deletes nothing
+roomba sweep           # dry run: what would go, and how much
+roomba sweep --apply   # actually do it
 ```
 
 Dry-run is the default. `--apply` is the only thing that deletes.
+
+## Building
+
+```sh
+cargo build --release      # -> target/release/roomba
+```
+
+Prebuilt `x86_64-unknown-linux-gnu` binaries are attached to releases; each is that
+`cargo build --release` artifact, so a download and a from-source build are the same
+bytes.
+
+Inside the `arrdem/source` monorepo it builds and tests under Bazel like the other Rust
+tools:
+
+```sh
+bazel run  //projects/roomba -- scan
+bazel test //projects/roomba/...
+```
 
 ## What it sweeps, and why that's safe
 
